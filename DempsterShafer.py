@@ -9,32 +9,32 @@ import operator
 ################ '' is chosen to represent the set of all elements
 def Combinare(d1, d2):   
     united=set(d2.keys()).union(set(d1.keys()))
-    result=dict.fromkeys(united,0)#initializam un dictionary cu uniunea de chei dintre 
-                                #cele 2 multimi si initializam cu valorile 0
-    ## Combinarea
+    result=dict.fromkeys(united,0)#init an dictionary with union of keys from both sets 
+                                #and init values with 0
+    ## Combination
     for i in d1.keys():
         for j in d2.keys():
-            if str(i)=='' and str(i) == str(j):#pentru intersectie '' ''
+            if str(i)=='' and str(i) == str(j):#for intersection between '' ''
                 result[i]+=d1[i]*d2[j]
             else:
-                if str(i)=='':# pentru caz '' 'char'
+                if str(i)=='':# for case '' 'char'
                     result[j]+=d1[i]*d2[j]
-                if str(j)=='':# pentru caz 'char' ''
+                if str(j)=='':# for case 'char' ''
                     result[i]+=d1[i]*d2[j]
                 if str(j)!='' and str(i)!='':
-                    st1 =set(str(i)).intersection(set(str(j)))#retinem intersectia
+                    st1 =set(str(i)).intersection(set(str(j)))#save intersection
                     for k in result.keys():
-                        if (len(st1)!=0 and(st1==set(k))):#verificam daca intersectia precedenta se regaseste in cheile dictionar
-                            result[k]+=d1[i]*d2[j]#daca da, atunci aplicam formula
+                        if (len(st1)!=0 and(st1==set(k))):#check if previous intersection is in dict keys
+                            result[k]+=d1[i]*d2[j]#if yes, apply the formula
                             break
-    ##normalizare
-    #aplicam round pt valorile vectorului
+    ##Normalisation
+    #Round for dict's values
     for i in result.keys():
         result[i] = round(result[i],4)
-    #aplicam round pt valoarea de la numitor( = suma valorilor din dictionar)
+    #Round for sum of all values
     f= sum(list(result.values()))
     f=round(f,4)
-    #realizam impartirea si aplicam round
+    #divide and round
     for i in result.keys():
         result[i] =round(result[i]/f,4)
     return result
@@ -55,31 +55,31 @@ def getBeliefs(masses):
     for i in belief.keys():
         for j in belief.keys():
             if(i!=j):
-                if set(str(i)).issuperset(set(str(j))) and i!='' and j!='':#daca i include j, adaugam la i masa lui j
+                if set(str(i)).issuperset(set(str(j))) and i!='' and j!='':#if i includes j, add mass of j to beliefs of i
                     belief[i]+=masses[j]
     for i in belief.keys():
-        belief[i] = round(belief[i],4) #round cu 4 zecimale
+        belief[i] = round(belief[i],4) #round with 4 digits
     return belief
 
 def getPlauzibilitati(masses):
     plauzibil = masses.copy()
     
     for i in plauzibil.keys():
-        plauzibil[i] = 0 #initializam elementele cu 0
+        plauzibil[i] = 0 #init elements with 0
     for i in plauzibil.keys():
         for j in plauzibil.keys():
-            if len(set(str(i)).intersection(set(str(j))))!=0 and i!='':#daca intersectia dintre i si j e diferit de multime vida si i!=''
-                plauzibil[i]+=masses[j];#adauga la i masa lui j
+            if len(set(str(i)).intersection(set(str(j))))!=0 and i!='':# if intersection of i and j is not None and i is not ''
+                plauzibil[i]+=masses[j];#add mass of j to plausibilities of i
             if j=='':
-                plauzibil[i]+=masses[j]#daca j este '', adauga masa lui la i
+                plauzibil[i]+=masses[j]#if j is '', add its mass to i
          
     for i in plauzibil.keys():
-        plauzibil[i] = round(plauzibil[i],4) #round 4 zecimale
+        plauzibil[i] = round(plauzibil[i],4) #round 4 digits
     return plauzibil
 
 def filterResults(beliefs, plauzibilities):
     finalSet = {}
-    #Filtram elementele cu aceleasi valori de belief si plauzibilitate cu un superset
+    #Filter elements with same values of beliefs and plausibilities with supersets(superset.bel=this.bel, etc...)
     for elem in beliefs.keys():
         ssetFlag = False 
         for elemb in beliefs.keys():
@@ -141,8 +141,8 @@ if my_file.is_file():
         belief = getBeliefs(mass)
         plauzibil = getPlauzibilitati(mass)
         finalSet = filterResults(belief, plauzibil)
-        #ordonam elementele
+        #order elements
         allElements=sorted(finalSet.items(), key=operator.itemgetter(1),reverse=True)
         
-        print("Intervale")
+        print("Intervals")
         print(getFinalResult(allElements))
