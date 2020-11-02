@@ -117,10 +117,11 @@ def get_final_result(elements, plausibility):
 #war				r
 #westerns			w
 
-decodings = {'a':'action', 'v':'adventure', 'c':'comedy', 
-             'g':'crime/gangster', 'd':'drama', 'e':'epics/historical',
-             'h':'horror', 'm':'musicals/dance', 's':'science fiction',
-             'r':'war', 'w':'westerns'}
+decodings = {'a':'s1', 'b':'s2',
+             'c':'s3', 'd':'s4',
+             'e':'s5', 'f':'s6',
+             'g':'s7', 'h':'s8',
+             'i':'s9'}
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--filename', type=str,
