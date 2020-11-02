@@ -7,7 +7,7 @@ Created on Sat Dec  1 14:59:20 2018
 import argparse
 import operator
 ################ '' is chosen to represent the set of all elements
-def Combinare(d1, d2):   
+def combination(d1, d2):   
     united=set(d2.keys()).union(set(d1.keys()))
     result=dict.fromkeys(united,0)#init an dictionary with union of keys from both sets 
                                 #and init values with 0
@@ -39,18 +39,18 @@ def Combinare(d1, d2):
         result[i] =round(result[i]/f,4)
     return result
 
-def getMass(allLines):
+def get_mass(allLines):
     mass = {}
     previousLine = {}
     currentLine = {}
     previousLine = ast.literal_eval(allLines[0])
     for line in range(1,len(allLines)):
         currentLine = ast.literal_eval(allLines[line])
-        mass = Combinare(previousLine,currentLine)
+        mass = combination(previousLine,currentLine)
         previousLine=mass
     return mass.copy()
 
-def getBeliefs(masses):
+def get_beliefs(masses):
     belief = masses.copy()
     for i in belief.keys():
         for j in belief.keys():
@@ -61,36 +61,36 @@ def getBeliefs(masses):
         belief[i] = round(belief[i],4) #round with 4 digits
     return belief
 
-def getPlauzibilitati(masses):
-    plauzibil = masses.copy()
+def get_plausibility(masses):
+    plausibility = masses.copy()
     
-    for i in plauzibil.keys():
-        plauzibil[i] = 0 #init elements with 0
-    for i in plauzibil.keys():
-        for j in plauzibil.keys():
+    for i in plausibility.keys():
+        plausibility[i] = 0 #init elements with 0
+    for i in plausibility.keys():
+        for j in plausibility.keys():
             if len(set(str(i)).intersection(set(str(j))))!=0 and i!='':# if intersection of i and j is not None and i is not ''
-                plauzibil[i]+=masses[j];#add mass of j to plausibilities of i
+                plausibility[i]+=masses[j];#add mass of j to plausibilities of i
             if j=='':
-                plauzibil[i]+=masses[j]#if j is '', add its mass to i
+                plausibility[i]+=masses[j]#if j is '', add its mass to i
          
-    for i in plauzibil.keys():
-        plauzibil[i] = round(plauzibil[i],4) #round 4 digits
-    return plauzibil
+    for i in plausibility.keys():
+        plausibility[i] = round(plausibility[i],4) #round 4 digits
+    return plausibility
 
-def filterResults(beliefs, plauzibilities):
+def filter_results(beliefs, plausibility):
     finalSet = {}
-    #Filter elements with same values of beliefs and plausibilities with supersets(superset.bel=this.bel, etc...)
+    #Filter elements with same values of beliefs and plausibility with supersets(superset.bel=this.bel, etc...)
     for elem in beliefs.keys():
         ssetFlag = False 
         for elemb in beliefs.keys():
-            if elem!=elemb and set(elemb).issuperset(set(elem)) and beliefs[elem]==beliefs[elemb] and plauzibilities[elem]==plauzibilities[elemb]:
+            if elem!=elemb and set(elemb).issuperset(set(elem)) and beliefs[elem]==beliefs[elemb] and plausibility[elem]==plausibility[elemb]:
                 ssetFlag = True
                 break
-        if ssetFlag == False and plauzibil[elem]!=0.0:
-            finalSet[elem] = belief[elem]
+        if ssetFlag == False and plausibility[elem]!=0.0:
+            finalSet[elem] = beliefs[elem]
     return finalSet
 	
-def getFinalResult(elements):
+def get_final_result(elements, plausibility):
     global decodings
     resultString = ''
     for elem in elements:
@@ -100,7 +100,7 @@ def getFinalResult(elements):
             if decodings[letter]!=None:
                 movieTypes += decodings[letter]+', '
         if elem[0] != '':
-            resultString += movieTypes[:-2]+' ['+str(elem[1])+', '+str(plauzibil[elem[0]])+']\n'
+            resultString += movieTypes[:-2]+' ['+str(elem[1])+', '+str(plausibility[elem[0]])+']\n'
     return resultString
 
     
@@ -114,8 +114,8 @@ def getFinalResult(elements):
 #horror             h
 #musicals/dance     m
 #science fiction    s
-#war				     r
-#westerns			  w
+#war				r
+#westerns			w
 
 decodings = {'a':'action', 'v':'adventure', 'c':'comedy', 
              'g':'crime/gangster', 'd':'drama', 'e':'epics/historical',
@@ -123,7 +123,7 @@ decodings = {'a':'action', 'v':'adventure', 'c':'comedy',
              'r':'war', 'w':'westerns'}
 
 parser = argparse.ArgumentParser()
-parser.add_argument('filename', type=str,
+parser.add_argument('--filename', type=str,
                    help='Path to file with reviews including file name')
 args = parser.parse_args()
 print(str(args.filename))
@@ -137,12 +137,12 @@ if my_file.is_file():
     with open(pathToFile) as f:
         lines = f.readlines()
     if len(lines)>1:
-        mass = getMass(lines)
-        belief = getBeliefs(mass)
-        plauzibil = getPlauzibilitati(mass)
-        finalSet = filterResults(belief, plauzibil)
+        mass = get_mass(lines)
+        beliefs = get_beliefs(mass)
+        plausibility = get_plausibility(mass)
+        final_set = filter_results(beliefs, plausibility)
         #order elements
-        allElements=sorted(finalSet.items(), key=operator.itemgetter(1),reverse=True)
+        all_elements=sorted(final_set.items(), key=operator.itemgetter(1),reverse=True)
         
         print("Intervals")
-        print(getFinalResult(allElements))
+        print(get_final_result(all_elements, plausibility))
