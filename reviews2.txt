@@ -1,0 +1,9 @@
+[[{'cold', 'flu'},0.6], [{'meningitis'},0.2], [{'indigestion'},0.1], [{''},0.1]]
+[[{'meningitis','indigestion'},0.7], [{''},0.3]]
+[[{'cold','flu','indigestion'},0.99], [{''},0.01]]
+#cold, flu, meningitis or indigestion
+#[[{'Big'},0.8], [{''},0.2]]
+#[[{'Big'},0.6], [{''},0.4]]
+#
+#[[{'Big'},0.8], [{''},0.2]]
+#[[{'Small'},0.6], [{''},0.4]]
