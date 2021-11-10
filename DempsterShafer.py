@@ -117,34 +117,35 @@ def get_final_result(elements, plausibility):
             resultString += movieTypes[11:-2]+' ['+str(elem[1])+', '+str(plausibility[elem[0]])+']\n'
     return resultString
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--filename', type=str,
-                   help='Path to file with reviews including file name')
-args = parser.parse_args()
-print(str(args.filename))
 
-pathToFile = args.filename
-from pathlib import Path
-import ast
-mass={}
-my_file = Path(pathToFile)
-if my_file.is_file():
-    with open(pathToFile) as f:
-        lines = f.readlines()
-    if len(lines)>1:
-        mass = get_mass(lines)
-        # print(mass)
-        # all = frozenset({''})
-        # if all in mass:
-        #     del mass[all]
-        beliefs = get_beliefs(mass)
-        # print(beliefs)
-        plausibility = get_plausibility(mass)
-        # print(plausibility)
-        final_set = filter_results(beliefs, plausibility)
-        # # print(final_set)
-        # # #order elements
-        all_elements=sorted(final_set.items(), key=operator.itemgetter(1),reverse=True)
-        
-        print("Intervals")
-        print(get_final_result(all_elements, plausibility))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--filename', type=str,
+			   help='Path to file with reviews including file name')
+    args = parser.parse_args()
+    print(str(args.filename))
+
+    pathToFile = args.filename
+    from pathlib import Path
+    import ast
+    mass={}
+    my_file = Path(pathToFile)
+    if my_file.is_file():
+	with my_file.open() as f:
+            lines = f.readlines()
+	if len(lines)>1:
+	    mass = get_mass(lines)
+		# print(mass)
+		# all = frozenset({''})
+		# if all in mass:
+		#     del mass[all]
+	    beliefs = get_beliefs(mass)
+		# print(beliefs)
+	    plausibility = get_plausibility(mass)
+		# print(plausibility)
+            final_set = filter_results(beliefs, plausibility)
+		# # print(final_set)
+		# # #order elements
+	    all_elements=sorted(final_set.items(), key=operator.itemgetter(1),reverse=True)
+            print("Intervals")
+	    print(get_final_result(all_elements, plausibility))
